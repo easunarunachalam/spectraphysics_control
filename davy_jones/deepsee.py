@@ -38,12 +38,11 @@ class DeepSee:
             self.rm = ResourceManager()
             self.device = self._setup_device(port_name)
             wdt = self.get_watchdog_time()
-            if wdt > 0:
+            if (wdt > 0) and disable_watchdog: 
+                self.set_watchdog_time(0)
+                print("Disabling watchdog timer.")
+            elif wdt>0:
                 warnings.warn(f"Found watchdog timer set to {wdt:0.1f} seconds.")
-                if disable_watchdog:
-                    self.set_watchdog_time(0)
-                    print("Disabling watchdog timer.")
-
         else:
             from .fake_device import FakeDevice
 
