@@ -1,5 +1,5 @@
-# davy-jones
-Python object for controlling Insight DeepSee Lasers. The `DeepSee` class is a
+# spectraphysics_control
+Python object for controlling Spectra-Physics lasers. The `DeepSee` class is a
 wrapper around the serial interface to the laser providing convenient methods
 in place of unwieldy serial commands.
 
@@ -34,7 +34,7 @@ deepsee.close() # Reset watchdog, close shuttters, power off, close serial conne
 While not all commands are wrapped it is possible to send serial commands
 directly via `DeepSee.device` which is the underlying pyvisa serial object.
 
-| Serial command | `davy_jones.DeepSee` method|
+| Serial command | `spectraphysics_control.DeepSee` method|
 |----------------|----------------------------|
 | ON | `power_on` |
 | OFF | `power_off`|
