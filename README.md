@@ -40,16 +40,16 @@ directly via `DeepSee.device` which is the underlying pyvisa serial object.
 | OFF | `power_off`|
 | IRSHUTter | `open_stokes_shutter`/`close_stokes_shutter`|
 | IRSHUTter? | `stokes_shutter_state`|
-| LCD:BRIGtness | `NotImplemented`|
-| MODE RUN | `NotImplemented`|
-| MODE ALIGN | `NotImplemented`|
+| LCD:BRIGhtness | `NotImplemented`|
+| MODE RUN | `set_mode_run`|
+| MODE ALIGN | `set_mode_align`|
 | MODE? | `get_mode`|
-| READ:AHIStory? | `NotImplemented`|
-| READ:HUM? | `NotImplemented`|
+| READ:AHIStory? | `get_history`|
+| READ:HUM? | `get_humidity`|
 | READ:PCTWarmedup? | `get_pct_warmup`|
-| READ:PLASer:DIODe(n):CURRent? | `NotImplemented`|
-| READ:PLASer:DIODe(n):TEMPerature? | `NotImplemented`|
-| READ:PLASer:DIODe(n):HOURS | `NotImplemented`|
+| READ:PLASer:DIODe(n):CURRent? | `get_current`|
+| READ:PLASer:DIODe(n):TEMPerature? | `get_temperature`|
+| READ:PLASer:DIODe(n):HOURS | `get_diode_hours`|
 | READ:POWer? |`get_power`|
 | READ:WAVelength? |`get_wavelength`|
 | SAVe |`NotImplemented`|

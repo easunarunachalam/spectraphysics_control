@@ -25,9 +25,9 @@ def port_map() -> None:
 _instance = None
 
 
-class DeepSee:
+class LaserController:
     @classmethod
-    def instance(cls, port_name: str = "ASRL4::INSTR", disable_watchdog: bool = True, fake: bool = False) -> DeepSee:
+    def instance(cls, port_name: str = "ASRL4::INSTR", disable_watchdog: bool = True, fake: bool = False) -> LaserController:
         global _instance
         if _instance is None:
             _instance = cls(port_name, disable_watchdog, fake)
@@ -93,7 +93,7 @@ class DeepSee:
 
         if status != 25:
             raise ValueError(
-                f"DeepSee is not ready to turn on. Found status number {status}"
+                f"Laser is not ready to turn on. Found status number {status}"
             )
         self.device.write("on")
 
@@ -189,12 +189,47 @@ class DeepSee:
 
         self.device.write(f"control:mtrmov {pos}")
 
+    def get_history(self) -> int:
+        """
+        Get history buffer.
+        """
+
+        return self.device.query("READ:AHIStory?")
+
+    def get_humidity(self) -> int:
+        """
+        Get humidity.
+        """
+
+        return float(self.device.query("READ:HUM?"))
+
     def get_pct_warmup(self) -> int:
         """
         Get the current warmup state.
         """
 
-        return int(self.device.query("read:pctwarmedup?"))
+        return float(self.device.query("read:pctwarmedup?"))
+
+    def get_current(self) -> int:
+        """
+        Get the diode current.
+        """
+
+        return float(self.device.query("READ:PLASer:DIODe1:CURRent?"))
+
+    def get_temperature(self) -> int:
+        """
+        Get the diode temperature.
+        """
+
+        return float(self.device.query("READ:PLASer:DIODe1:TEMPerature?"))
+
+    def get_diode_hours(self) -> int:
+        """
+        Get the number of hours the diode has been running.
+        """
+
+        return float(self.device.query("READ:PLASer:DIODe1:HOURS"))
 
     def open_pump_shutter(self)-> None:
         """
@@ -257,6 +292,35 @@ class DeepSee:
         None
         """
         self.device.write(f"tim:watc {seconds}")
+
+    def set_mode_run(self) -> None:
+        """
+        Set mode to run
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+        self.device.write(f"MODE RUN")
+
+    def set_mode_align(self) -> None:
+        """
+        Set mode to align
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+        self.device.write(f"MODE ALIGN")
+    
 
     def close(self):
         self.set_watchdog_time(3)
