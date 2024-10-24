@@ -56,9 +56,11 @@ class LaserControlWidget(QWidget):
 
 
         # Initialize the widget
-        self.resize(220, 300)
+        self.resize(230, 350)
+        self.move(3500, 10)
         self.setWindowTitle("Laser Control")
         # self.setWindowTitle("Spectra-Physics Laser Control")
+        self.raise_()
 
         self.layout = QFormLayout()
 
@@ -185,8 +187,10 @@ class LaserControlWidget(QWidget):
         self.pump_shutter_status = self.laser_controller.pump_shutter_state()
         if self.pump_shutter_status == 0:
             self.pump_shutter_button.setIcon(icon(self._icon_closed, color=self._icon_color_closed))
+            self.pump_shutter_button.setText(self._button_text_closed)
         elif self.pump_shutter_status == 1:
             self.pump_shutter_button.setIcon(icon(self._icon_open, color=self._icon_color_open))
+            self.pump_shutter_button.setText(self._button_text_open)
 
 
     def update_display_status(self):
@@ -236,7 +240,8 @@ class LaserControlWidget(QWidget):
         self.current_status.setText(f"{value:2.2f}")
 
         value = self.laser_controller.get_history()
-        self.history_buffer_status.setText(value)
+        # only show last 8 status codes
+        self.history_buffer_status.setText(value[:32])
 
     def on_toggle_mode_change(self) -> None:
 
@@ -269,8 +274,9 @@ class LaserControlWidget(QWidget):
 
         if self.laser_status == 25:
             # currently off -> need to turn on
-            self.laser_controller.power_on(blocking=True)
-            self.status_string.setText("Turning on... (other commands blocked)")
+            self.laser_controller.power_on(blocking=False)
+            self.status_string.setText("Turning on...")
+            # self.status_string.setText("Turning on... (other commands blocked)")
         elif self.laser_status == 50:
             # currently on -> need to turn off
             self.laser_controller.power_off()
