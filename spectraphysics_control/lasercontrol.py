@@ -237,9 +237,9 @@ class LaserController:
         """
         self.device.write("shut 1")
 
-    def open_stokes_shutter(self) -> None:
+    def open_IR_shutter(self) -> None:
         """
-        Open the stokes/IR/fixed beam shutter.
+        Open the IR/fixed beam shutter.
         """
         self.device.write("irshut 1")
 
@@ -248,8 +248,8 @@ class LaserController:
         bit_mask = 0x00000004
         return bool(status & bit_mask)
 
-    def stokes_shutter_state(self) -> bool:
-        status = self.device.query("*stb?")
+    def IR_shutter_state(self) -> bool:
+        status = int(self.device.query("*stb?"))
         bit_mask = 0x00000008
         return bool(status & bit_mask)
 
@@ -259,9 +259,9 @@ class LaserController:
         """
         self.device.write("shut 0")
 
-    def close_stokes_shutter(self):
+    def close_IR_shutter(self):
         """
-        Close the stokes/IR/fixed beam shutter
+        Close the IR/fixed beam shutter
         """
 
         self.device.write("irshut 0")
@@ -325,6 +325,6 @@ class LaserController:
     def close(self):
         self.set_watchdog_time(3)
         self.close_pump_shutter()
-        self.close_stokes_shutter()
+        self.close_IR_shutter()
         self.power_off()
         self.device.close()

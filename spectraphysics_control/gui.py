@@ -122,6 +122,18 @@ class LaserControlWidget(QWidget):
         self.pump_shutter_button.clicked.connect(self.on_pump_shutter_button_clicked)
         self.layout.addRow(self.pump_shutter_label, self.pump_shutter_button)
 
+        self.IR_shutter_label = QLabel("IR Beam Shutter:")
+        self.IR_shutter_status = 0 # 0 = closed, 1 = open
+        self.IR_shutter_button = QPushButton(text=self._button_text_closed)
+        sizepolicy_btn = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.IR_shutter_button.setSizePolicy(sizepolicy_btn)
+        self.IR_shutter_button.setIcon(
+            icon(self._icon_closed, color=self._icon_color_closed)
+        )
+        self.IR_shutter_button.setIconSize(QSize(self._icon_size, self._icon_size))
+        self.IR_shutter_button.clicked.connect(self.on_IR_shutter_button_clicked)
+        self.layout.addRow(self.IR_shutter_label, self.IR_shutter_button)
+
         self.mode_label = QLabel("Mode:")
         self.mode_status = QLineEdit("")
         self.mode_status.setReadOnly(True)
@@ -191,6 +203,15 @@ class LaserControlWidget(QWidget):
         elif self.pump_shutter_status == 1:
             self.pump_shutter_button.setIcon(icon(self._icon_open, color=self._icon_color_open))
             self.pump_shutter_button.setText(self._button_text_open)
+
+
+        self.IR_shutter_status = self.laser_controller.IR_shutter_state()
+        if self.IR_shutter_status == 0:
+            self.IR_shutter_button.setIcon(icon(self._icon_closed, color=self._icon_color_closed))
+            self.IR_shutter_button.setText(self._button_text_closed)
+        elif self.IR_shutter_status == 1:
+            self.IR_shutter_button.setIcon(icon(self._icon_open, color=self._icon_color_open))
+            self.IR_shutter_button.setText(self._button_text_open)
 
 
     def update_display_status(self):
@@ -269,6 +290,20 @@ class LaserControlWidget(QWidget):
             value = self.pump_shutter_status
             self.laser_controller.close_pump_shutter()
             raise ValueError(f"Unknown pump shutter status ({value:d}).")
+
+    def on_IR_shutter_button_clicked(self) -> None:
+
+        if self.IR_shutter_status == 0:
+            # currently closed -> need to open
+            self.laser_controller.open_IR_shutter()
+        elif self.IR_shutter_status == 1:
+            # currently open -> need to close
+            self.laser_controller.close_IR_shutter()
+        else:
+            # unknown status, close shutter
+            value = self.IR_shutter_status
+            self.laser_controller.close_IR_shutter()
+            raise ValueError(f"Unknown IR shutter status ({value:d}).")
 
     def on_laser_onoff_button_clicked(self) -> None:
 
