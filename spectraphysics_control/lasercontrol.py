@@ -37,7 +37,9 @@ class LaserController:
         if not fake:
             self.rm = ResourceManager()
             self.device = self._setup_device(port_name)
+            print(self.device)
             wdt = self.get_watchdog_time()
+            print(wdt)
             if (wdt > 0) and disable_watchdog: 
                 self.set_watchdog_time(0)
                 print("Disabling watchdog timer.")
