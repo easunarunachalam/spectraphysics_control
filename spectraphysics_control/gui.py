@@ -217,41 +217,57 @@ class LaserControlWidget(QWidget):
         """
         Update laser status indicators
         """
-        if (self.laser_status >= 0) & (self.laser_status <= 24):
-            self.status_string.setText("Initializing... (not ready to turn on)")
-        elif (self.laser_status == 25):
-            self.status_string.setText("Ready to turn on")
-        elif (self.laser_status >= 26) & (self.laser_status <= 49):
-            self.status_string.setText("Turning on...")
-        elif (self.laser_status == 50):
-            self.status_string.setText("Running mode")
-        elif (self.laser_status >= 51) & (self.laser_status <= 59):
-            self.status_string.setText("Initializing alignment mode...")
-        elif (self.laser_status == 60):
-            self.status_string.setText("Alignment mode")
-        elif (self.laser_status >= 61) & (self.laser_status <= 69):
-            self.status_string.setText("Exiting alignment mode...")
-        elif (self.laser_status >= 70) & (self.laser_status <= 127):
-            code = self.laser_status
-            self.status_string.setText(f"Reserved status code {code:3d}")
-        else:
-            code = self.laser_status
-            self.status_string.setText(f"Invalid status code {code:3d}")
 
-        value = self.laser_controller.get_power()
-        self.power_status.setText(f"{value:2.2f}")
+        try:
 
-        value = self.laser_controller.get_wavelength()
-        self.wavelength_status.setText(f"{value:3d}")
+            if (self.laser_status >= 0) & (self.laser_status <= 24):
+                self.status_string.setText("Initializing... (not ready to turn on)")
+            elif (self.laser_status == 25):
+                self.status_string.setText("Ready to turn on")
+            elif (self.laser_status >= 26) & (self.laser_status <= 49):
+                self.status_string.setText("Turning on...")
+            elif (self.laser_status == 50):
+                self.status_string.setText("Running mode")
+            elif (self.laser_status >= 51) & (self.laser_status <= 59):
+                self.status_string.setText("Initializing alignment mode...")
+            elif (self.laser_status == 60):
+                self.status_string.setText("Alignment mode")
+            elif (self.laser_status >= 61) & (self.laser_status <= 69):
+                self.status_string.setText("Exiting alignment mode...")
+            elif (self.laser_status >= 70) & (self.laser_status <= 127):
+                code = self.laser_status
+                self.status_string.setText(f"Reserved status code {code:3d}")
+            else:
+                code = self.laser_status
+                self.status_string.setText(f"Invalid status code {code:3d}")
 
-        value = self.laser_controller.get_mtrpos()
-        self.ds_status.setText(f"{value:2.2f}")
+            value = self.laser_controller.get_power()
+            self.power_status.setText(f"{value:2.2f}")
 
-        value = self.laser_controller.get_mode()
-        self.mode_status.setText(value)
+            value = self.laser_controller.get_wavelength()
+            self.wavelength_status.setText(f"{value:3d}")
 
-        value = self.laser_controller.get_temperature()
-        self.temperature_status.setText(f"{value:2.2f}")
+            value = self.laser_controller.get_mtrpos()
+            self.ds_status.setText(f"{value:2.2f}")
+
+            value = self.laser_controller.get_mode()
+            self.mode_status.setText(value)
+
+            value = self.laser_controller.get_temperature()
+            self.temperature_status.setText(f"{value:2.2f}")
+
+            value = self.laser_controller.get_humidity()
+            self.humidity_status.setText(f"{value:2.3f}")
+
+            value = self.laser_controller.get_current()
+            self.current_status.setText(f"{value:2.2f}")
+
+            value = self.laser_controller.get_history()
+            # only show last 8 status codes
+            self.history_buffer_status.setText(value[:32])
+
+        except:
+            print("Error updating display status (laser control)")
 
 
 
@@ -328,3 +344,17 @@ class LaserControlWidget(QWidget):
             self.ds_status.setText(f"{new_position:.2f}")  # Update status display
         except ValueError:
             warnings.warn("Invalid motor position value. Please enter a numeric value.")
+
+    def read_wavelength(self):
+        """
+        Return wavelength value in GUI.
+        Intended to allow you to avoid querying the laser itself.
+        """
+        return int(self.wavelength_status.text())
+
+    def read_status(self):
+        """
+        Return status value that was read during previous widget update.
+        Intended to allow you to avoid querying the laser itself.
+        """
+        return int(self.laser_status)
