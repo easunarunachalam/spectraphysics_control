@@ -1,14 +1,13 @@
-from __future__ import annotations
+from superqt.fonticon import icon
 
 import warnings
 from typing import Any, Union
 
 from fonticon_mdi6 import MDI6
-from pymmcore_plus import CMMCorePlus, DeviceType
 from qtpy.QtCore import QSize, Qt, QTimer
 from qtpy.QtGui import QPalette, QColor
 from qtpy.QtWidgets import QCheckBox, QHBoxLayout, QLabel, QPushButton, QSizePolicy, QWidget, QGridLayout, QFormLayout, QLineEdit
-from superqt.fonticon import icon
+# from superqt.fonticon import icon
 from superqt.utils import signals_blocked
 
 COLOR_TYPE = Union[
@@ -19,6 +18,7 @@ COLOR_TYPE = Union[
     "tuple[int, int, int, int]",
     "tuple[int, int, int]",
 ]
+
 
 class LaserControlWidget(QWidget):
     """A Widget to control a Spectra-Physics laser.
@@ -54,12 +54,11 @@ class LaserControlWidget(QWidget):
         self._button_text_open: str = "OPEN"
         self._button_text_closed: str = "CLOSED"
 
-
         # Initialize the widget
         self.resize(230, 350)
-        self.move(3500, 10)
-        self.setWindowTitle("Laser Control")
-        # self.setWindowTitle("Spectra-Physics Laser Control")
+        # self.move(350, 10)
+        # self.setWindowTitle("Laser Control")
+        self.setWindowTitle("Spectra-Physics Laser Control")
         self.raise_()
 
         self.layout = QFormLayout()
@@ -254,15 +253,8 @@ class LaserControlWidget(QWidget):
         value = self.laser_controller.get_temperature()
         self.temperature_status.setText(f"{value:2.2f}")
 
-        value = self.laser_controller.get_humidity()
-        self.humidity_status.setText(f"{value:2.3f}")
 
-        value = self.laser_controller.get_current()
-        self.current_status.setText(f"{value:2.2f}")
 
-        value = self.laser_controller.get_history()
-        # only show last 8 status codes
-        self.history_buffer_status.setText(value[:32])
 
     def on_toggle_mode_change(self) -> None:
 
