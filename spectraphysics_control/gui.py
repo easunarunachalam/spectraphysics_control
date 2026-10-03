@@ -294,10 +294,9 @@ class LaserControlWidget(QWidget):
             # currently open -> need to close
             self.laser_controller.close_pump_shutter()
         else:
-            # unknown status, close shutter
-            value = self.pump_shutter_status
-            self.laser_controller.close_pump_shutter()
-            raise ValueError(f"Unknown pump shutter status ({value:d}).")
+            # unknown/transitional status - ignore the click rather than
+            # acting on stale/uncertain state
+            warnings.warn(f"Unknown pump shutter status ({self.pump_shutter_status}); ignoring button click.")
 
     def on_IR_shutter_button_clicked(self) -> None:
 
@@ -308,10 +307,9 @@ class LaserControlWidget(QWidget):
             # currently open -> need to close
             self.laser_controller.close_IR_shutter()
         else:
-            # unknown status, close shutter
-            value = self.IR_shutter_status
-            self.laser_controller.close_IR_shutter()
-            raise ValueError(f"Unknown IR shutter status ({value:d}).")
+            # unknown/transitional status - ignore the click rather than
+            # acting on stale/uncertain state
+            warnings.warn(f"Unknown IR shutter status ({self.IR_shutter_status}); ignoring button click.")
 
     def on_laser_onoff_button_clicked(self) -> None:
 
@@ -324,10 +322,10 @@ class LaserControlWidget(QWidget):
             # currently on -> need to turn off
             self.laser_controller.power_off()
         else:
-            # unknown status, close shutter
-            value = self.pump_shutter_status
-            self.laser_controller.close_pump_shutter()
-            raise ValueError(f"Unknown pump shutter status ({value:d}).")
+            # unknown/transitional status (e.g. laser_status still at its
+            # initial value before the first status poll) - ignore the
+            # click rather than acting on stale/uncertain state
+            warnings.warn(f"Unknown laser status ({self.laser_status}); ignoring button click.")
 
     def update_wavelength(self):
         try:
